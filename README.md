@@ -7,6 +7,7 @@
 
 _Awesome Secure SaaS APIs is an awesome style list that curates the security aspects of SaaS and SaaS APIs so that you can evaluate them and make your infosec decisions faster._
 
+<a name="awesome-secure-saas"></a>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
