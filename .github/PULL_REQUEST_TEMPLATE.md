@@ -1,0 +1,3 @@
+- [ ] I have followed the [contributing guidelines](CONTRIBUTING.md)
+- [ ] I'm not marketing a product / abusing this list to sell something
+- [ ] I've made sure this entry does not exist in the list already
