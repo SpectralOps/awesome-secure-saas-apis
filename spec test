@@ -1,0 +1,93 @@
+x = zoho.crm.getRecordById("Deals",deal_id);
+contid = ifnull(x.get("Contact_Name"),"").get("id");
+contact = zoho.crm.getRecordById("Contacts",contid);
+selfclient_id = "1000.R7E613U09D3ONETK37R772P9XW17LR";
+auto_collect = true;
+organization_id = 723043531;
+Select_Plan = ifnull(x.getJSON("Select_Plan"),"");
+select_plan_list = list();
+if(Select_Plan == null)
+{
+	info "empty";
+}
+else if(Select_Plan != null)
+{
+	for each  line in Select_Plan
+	{
+		plan = line.getJSON("Plan");
+		plan_id = plan.getJSON("id");
+		plan_name = plan.getJSON("name");
+		planinfo = zoho.crm.getRecordById("Plan",plan_id);
+		plancode = planinfo.getJSON("Plan_Code");
+		plan_price = line.getJSON("Plan_Price");
+		plan_quantity = ifnull(line.getJSON("Quantity"),"1");
+		amount = line.getJSON("Amount");
+		forma = Map();
+		forma.put("plan_code",plancode);
+		forma.put("name",plan_name);
+		forma.put("price",plan_price);
+		forma.put("quantity",plan_quantity);
+		forma.put("amount",amount);
+		select_plan_list.add(forma);
+	}
+}
+Select_Addons = x.getJSON("Select_Addons");
+select_addons_list = list();
+if(Select_Addons == null)
+{
+	info "empty";
+}
+else if(Select_Addons != null)
+{
+	for each  line2 in Select_Addons
+	{
+		addon = line2.getJSON("Addon");
+		addon_id = addon.getJSON("id");
+		addon_name = addon.getJSON("name");
+		addoninfo = zoho.crm.getRecordById("Addons",addon_id);
+		addoncode = addoninfo.getJSON("Addon_Code");
+		addons_price = line2.getJSON("Addons_Price");
+		addon_quantity = ifnull(line2.getJSON("Quantity"),"1");
+		addon_amount = line2.getJSON("Addon_Amount");
+		form = Map();
+		form.put("addon_code",addoncode);
+		form.put("name",addon_name);
+		form.put("price",addons_price);
+		form.put("quantity",addon_quantity);
+		form.put("amount",1222);
+		select_addons_list.add(form);
+	}
+}
+product = ifnull(x.get("Products"),"");
+deal = ifnull(x.get("Account_Name").get("name"),"");
+deal_owner = ifnull(x.get("Owner").get("name"),"");
+coupon_id = ifnull(x.get("Coupon").get("id"),"");
+y = zoho.crm.getRecordById("Coupon",coupon_id);
+coupon_code = ifnull(y.get("Coupon_Code"),"");
+coupon_name = ifnull(x.get("Coupon").get("name"),"");
+cus = Map();
+cus.put("display_name",deal);
+cus.put("company_name",deal);
+cus.put("first_name",ifnull(contact.get("First_Name"),""));
+cus.put("last_name",ifnull(contact.get("Last_Name"),""));
+cus.put("email",ifnull(contact.get("Email"),""));
+valuemap = Map();
+valuemap.put("plan",forma);
+valuemap.put("addons",select_addons_list);
+valuemap.put("coupon_code",coupon_code);
+valuemap.put("coupon_name",coupon_name);
+valuemap.put("customer",cus);
+valuemap.put("salesperson_name",deal_owner);
+valuemap.put("auto_collect",false);
+response = invokeurl
+[
+	url :"https://subscriptions.zoho.com/api/v1/subscriptions"
+	type :POST
+	parameters:valuemap.toString()
+	connection:"zoho_subscriptions"
+];
+info cus;
+info valuemap;
+info select_plan_list;
+info select_addons_list;
+return "Create Subscriptions : " + response.get("message");
